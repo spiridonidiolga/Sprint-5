@@ -5,4 +5,4 @@ import locators
 class TestLogout:
     def test_logout_from_account(self, driver):
         
-        driver.get("https://stellar-burgers.test/account")
+        driver.get("https://stellarburgers.education-services.ru/login")

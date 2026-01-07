@@ -23,17 +23,16 @@ LOGO_LINK = "//img[@alt='Stellar Burgers']"  # Логотип Stellar Burgers
 CONSTRUCTOR_LINK = "//p[text()='Конструктор']"  # Ссылка «Конструктор»
 
 # --- Раздел «Конструктор» ---
-BUUNS_TAB = "//div[text()='Булки']"  # Вкладка «Булки»
+BUNS_TAB = "//div[text()='Булки']"  # Вкладка «Булки»
 SAUCES_TAB = "//div[text()='Соусы']"  # Вкладка «Соусы»
 INGREDIENTS_TAB = "//div[text()='Начинки']"  # Вкладка «Начинки»
 TAB_CONTENT_HEADER = "//h2"  # Заголовок текущего раздела
 
 
-# Элементы внутри разделов (для проверки наличия ингредиентов)
-BUUNS_SECTION = "//section[h2[text()='Булки']]"  # Секция «Булки»
-SAUCES_SECTION = "//section[h2[text()='Соусы']]"  # Секция «Соусы»
-INGREDIENTS_SECTION = "//section[h2[text()='Начинки']]"  # Секция «Начинки»
 
-# Признак активной вкладки (может отличаться — уточните по UI)
-ACTIVE_TAB_INDICATOR = "//div[@class and contains(@class, 'tab_active')]"  # Активный таб
+INGREDIENTS_SECTION = "//section[@class='ingredients-section']"  # замените на корректный XPath
+
+BUNS_TAB = "//div[contains(@class, 'tab') and contains(., 'Булки')]"
+SAUCES_TAB = "//div[contains(@class, 'tab') and contains(., 'Соусы')]"
+INGREDIENTS_TAB = "//div[contains(@class, 'tab') and contains(., 'Начинки')]"
 

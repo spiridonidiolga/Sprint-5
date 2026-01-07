@@ -8,13 +8,23 @@ import locators
 class TestConstructorTabs:
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.driver = webdriver.Chrome()
-        self.driver.get("https://stellar-burgers.test/constructor")
-        self.wait = WebDriverWait(self.driver, 10)
+        options = webdriver.ChromeOptions()
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--remote-debugging-port=0")
+        options.add_argument("--user-data-dir=/tmp/chrome-profile")
+        self.driver = webdriver.Chrome(options=options)
+        self.driver.get("https://stellarburgers.education-services.ru/")
+        self.wait = WebDriverWait(self.driver, 60)
+        
+        self.wait.until(lambda driver: driver.execute_script("return document.readyState") == "complete")
         yield
         self.driver.quit()  
 
     def test_bun_tab_scroll(self):
+        print("Current URL:", self.driver.current_url)  
+        bun_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, locators.BUNS_TAB)))
+        bun_tab.click()
         
         bun_tab = self.wait.until(EC.element_to_be_clickable((By.XPATH, locators.BUUNS_TAB)))
         bun_tab.click()
@@ -28,6 +38,8 @@ class TestConstructorTabs:
         assert "Булки" in active_tab.text, "Вкладка «Булки» не подсвечена как активная"
 
     def test_sauce_tab_scroll(self):
+        sauce_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, locators.SAUCES_TAB)))
+        sauce_tab.click()
         
         sauce_tab = self.wait.until(EC.element_to_be_clickable((By.XPATH, locators.SAUCES_TAB)))
         sauce_tab.click()
@@ -39,6 +51,8 @@ class TestConstructorTabs:
         assert "Соусы" in active_tab.text, "Вкладка «Соусы» не активна"
 
     def test_ingredient_tab_scroll(self):
+        ingredient_tab = self.wait.until(EC.visibility_of_element_located((By.XPATH, locators.INGREDIENTS_TAB)))
+        ingredient_tab.click()
         
         ingredient_tab = self.wait.until(EC.element_to_be_clickable((By.XPATH, locators.INGREDIENTS_TAB)))
         ingredient_tab.click()

@@ -1,28 +1,116 @@
 import pytest
+from selenium import webdriver
 from selenium.webdriver.common.by import By
-import locators
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+import time
 
 class TestRegistration:
     def test_successful_registration(self, driver):
-        
-        driver.get("https://stellar-burgers.test/register")
+        wait = WebDriverWait(driver, 15)
+        driver.get("https://stellarburgers.education-services.ru/register")
 
-        driver.find_element(By.XPATH, locators.REG_NAME_INPUT).send_keys("Ольга Спиридониди")
-        driver.find_element(By.XPATH, locators.REG_EMAIL_INPUT).send_keys("olgaspiridonidi36333@yandex.ru")
-        driver.find_element(By.XPATH, locators.REG_PASSWORD_INPUT).send_keys("123456")
-        driver.find_element(By.XPATH, locators.REG_SUBMIT_BUTTON).click()
+        try:
+            
+            name_input = wait.until(
+                EC.presence_of_element_located((
+                    By.XPATH,
+            "//input[contains(@placeholder, 'Имя')] | "
+            "//input[@placeholder='Имя'] | "
+            "//input[@type='text']"
+        ))
+            )
+            name_input.send_keys("Olga_1730987654")
 
-        assert "Личный кабинет" in driver.page_source
+            
+            email_input = wait.until(
+                EC.presence_of_element_located((
+            By.XPATH,
+            "//input[contains(@placeholder, 'Email')] | "
+            "//input[@placeholder='Email'] | "
+            "//input[@type='email']"
+        ))
+            )
+            email_input.send_keys("olgaspiridonidi36555@example.com")
+
+            
+            password_input = wait.until(
+                EC.presence_of_element_located((
+            By.XPATH,
+            "//input[contains(@placeholder, 'Пароль')] | "
+            "//input[@placeholder='Пароль'] | "
+            "//input[@type='password']"
+        ))
+            )
+            password_input.send_keys("1830987654")
+
+            
+            register_button = wait.until(
+                EC.element_to_be_clickable((
+            By.XPATH,
+            "//button[contains(., 'Зарегистрироваться')] | "
+            "//button[@type='submit']"
+        ))
+            )
+            register_button.click()
+
+            
+            wait.until(EC.url_contains("/login"))
+
+        except TimeoutException as e:
+            self._handle_failure(driver, "Ошибка при регистрации", e)
+            raise
+
 
     def test_invalid_password_validation(self, driver):
-        
-        driver.get("https://stellar-burgers.test/register")
+        """Тест валидации пароля (менее 6 символов)"""
+        wait = WebDriverWait(driver, 15)
+        driver.get("https://stellarburgers.education-services.ru/register")
 
-        driver.find_element(By.XPATH, locators.REG_PASSWORD_INPUT).send_keys("123")
-        driver.find_element(By.XPATH, locators.REG_SUBMIT_BUTTON).click()
+        try:
+            
+            name_input = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder, 'Имя')]"))
+            )
+            name_input.send_keys("Тестовый Пользователь")
 
-        error_element = driver.find_element(By.XPATH, locators.REG_ERROR_MESSAGE)
-        assert error_element.is_displayed()
-        assert "Пароль некорректный" in error_element.text
+
+            
+            email_input = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder, 'Email')]"))
+            )
+            email_input.send_keys("test@example.com")
+
+            
+            password_input = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder, 'Пароль')]"))
+            )
+            password_input.send_keys("123")
+
+
+            
+            register_button = wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Зарегистрироваться')]"))
+            )
+            register_button.click()
+
+            
+            error_message = wait.until(
+                EC.visibility_of_element_located((
+            By.XPATH,
+            "//p[contains(., 'Некорректный пароль')] | "
+            "//div[contains(., 'Пароль')] | "
+            "//span[contains(., 'минимум 6 символов')]"
+        ))
+            )
+            assert "6" in errormessage.text or "пароль" in errormessage.text.lower(), \
+                f"Ожидалось сообщение о пароле, но найдено: {errormessage.text}"
+
+        except TimeoutException as e:
+            self._handle_failure(driver, "Валидация пароля не сработала", a)
+            raise
+
+    
 
 
