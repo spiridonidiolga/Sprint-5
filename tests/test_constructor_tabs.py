@@ -6,20 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import locators
 
 class TestConstructorTabs:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--remote-debugging-port=0")
-        options.add_argument("--user-data-dir=/tmp/chrome-profile")
-        self.driver = webdriver.Chrome(options=options)
-        self.driver.get("https://stellarburgers.education-services.ru/")
-        self.wait = WebDriverWait(self.driver, 60)
-        
-        self.wait.until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-        yield
-        self.driver.quit()  
+     
 
     def test_bun_tab_scroll(self):
         print("Current URL:", self.driver.current_url)  

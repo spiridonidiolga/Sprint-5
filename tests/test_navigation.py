@@ -40,26 +40,26 @@ class TestNavigation:
             raise
 
     def _perform_login(self, driver, wait):
-        """Выполняет вход в систему с тестовыми данными"""
+        
         try:
             
             email_input = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//input[@type='email']"))
+                EC.presence_of_element_located((LOGIN_EMAIL_INPUT))
             )
             email_input.clear()
-            email_input.send_keys("olgaspiridonidi36444@example.com")
+            email_input.send_keys()
 
             
             password_input = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//input[@type='password']"))
+                EC.presence_of_element_located((LOGIN_PASSWORD_INPUT))
             )
             password_input.clear()
-            password_input.send_keys("1730987654")
+            password_input.send_keys()
 
 
             
             login_button = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Войти')]"))
+                EC.element_to_be_clickable((LOGIN_SUBMIT_BUTTON))
             )
             login_button.click()
 
@@ -71,7 +71,7 @@ class TestNavigation:
             raise
 
     def test_navigate_to_constructor_via_logo(self, driver):
-        """Тест навигации через логотип"""
+        
         wait = WebDriverWait(driver, 15)
         driver.get("https://stellarburgers.education-services.ru/login")
         try:
@@ -91,7 +91,7 @@ class TestNavigation:
             raise
 
     def test_navigate_to_constructor_via_link(self, driver):
-        """Тест навигации через ссылку «Конструктор»"""
+        
         wait = WebDriverWait(driver, 15)
         driver.get("https://stellarburgers.education-services.ru/")
         try:

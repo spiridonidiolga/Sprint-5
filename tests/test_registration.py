@@ -21,7 +21,7 @@ class TestRegistration:
             "//input[@type='text']"
         ))
             )
-            name_input.send_keys("Olga_1730987654")
+            name_input.send_keys()
 
             
             email_input = wait.until(
@@ -32,7 +32,7 @@ class TestRegistration:
             "//input[@type='email']"
         ))
             )
-            email_input.send_keys("olgaspiridonidi36555@example.com")
+            email_input.send_keys()
 
             
             password_input = wait.until(
@@ -43,7 +43,7 @@ class TestRegistration:
             "//input[@type='password']"
         ))
             )
-            password_input.send_keys("1830987654")
+            password_input.send_keys()
 
             
             register_button = wait.until(
@@ -86,7 +86,7 @@ class TestRegistration:
             password_input = wait.until(
                 EC.presence_of_element_located((By.XPATH, "//input[contains(@placeholder, 'Пароль')]"))
             )
-            password_input.send_keys("123")
+            password_input.send_keys("123")  
 
 
             
@@ -108,9 +108,18 @@ class TestRegistration:
                 f"Ожидалось сообщение о пароле, но найдено: {errormessage.text}"
 
         except TimeoutException as e:
-            self._handle_failure(driver, "Валидация пароля не сработала", a)
+            self._handle_failure(driver, "Валидация пароля не сработала", e)
             raise
 
-    
+    def _handle_failure(self, driver, message, exception=None):
+        """Вспомогательный метод для диагностики ошибок"""
+        print(f"ОШИБКА: {message}")
+        print(f"Текущий URL: {driver.current_url}")
+        print(f"Заголовок страницы: {driver.title}")
+        if exception:
+            print(f"Исключение: {exception}")
+        timestamp = int(time.time())
+        driver.save_screenshot(f"error_{timestamp}.png")
+
 
 
