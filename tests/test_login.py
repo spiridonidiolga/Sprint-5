@@ -3,62 +3,79 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
-import time
 
 class TestLogin:
-    @pytest.mark.parametrize("scenario", [
-        "main_page",
-        "personal_account",
-        "from_registration",
-        "from_reset_password"
-    ])
-    def test_login_scenarios(self, driver, scenario):
-        wait = WebDriverWait(driver, 15) 
+    def setup_method(self):
+       
+        self.driver = webdriver.Chrome()  
+        self.wait = WebDriverWait(self.driver, 15)
 
-        try:
-            if scenario == "main_page":
-                driver.get("https://stellarburgers.education-services.ru/")
-                
-                login_link = wait.until(
-                    EC.element_to_be_clickable((
-                        By.XPATH,
-                        "//button[contains(@class, 'login-btn')] | "
-                        "//a[contains(@href, 'login')] | "
-                        "//*[contains(text(), 'Войти')]"
-                    ))
-                )
-                login_link.click()
+    def teardown_method(self):
+       
+        self.driver.quit()
 
-            elif scenario == "personal_account":
-                driver.get("https://stellarburgers.education-services.ru/")
-                personal_account = wait.until(
-                    EC.element_to_be_clickable((
-                        By.CSS_SELECTOR, "[href*='account'], a.account-link"))
-                )
-                personal_account.click()
 
-            elif scenario == "from_registration":
-                driver.get("https://stellarburgers.education-services.ru/register")
-                login_link = wait.until(
-                    EC.element_to_be_clickable((
-                        By.XPATH, "//a[contains(@href, 'login')] | //*[contains(text(), 'Войти в аккаунт')]"))
-                )
-                login_link.click()
+    def _wait_and_click(self, locator, locator_type=By.XPATH):
+        
+        element = self.wait.until(EC.element_to_be_clickable((locator_type, locator)))
+        element.click()
+        return element
 
-            elif scenario == "from_reset_password":
-                driver.get("https://stellarburgers.education-services.ru/forgot-password")
-                login_link = wait.until(
-                    EC.element_to_be_clickable((
-                        By.XPATH, "//a[contains(@href, 'login')] | //*[contains(text(), 'Войти в аккаунт')]"))
-                )
-                login_link.click()
+    def _assert_url_contains(self, expected_substring, timeout=10):
+        
+        WebDriverWait(self.driver, timeout).until(
+            EC.url_contains(expected_substring)
+        )
+        assert expected_substring in self.driver.current_url, \
+            f"Ожидалось, что URL содержит '{expected_substring}', но текущий URL: {self.driver.current_url}"
 
-        except (TimeoutException, NoSuchElementException) as e:
-            print(f"Элемент не найден для сценария '{scenario}': {e}")
-            print(f"Текущий URL: {driver.current_url}")
-            print(f"Заголовок страницы: {driver.title}")
-            driver.save_screenshot(f"error_{scenario}_{int(time.time())}.png")
-            raise
+    def test_login_from_main_page(self):
+        """Сценарий: вход с главной страницы."""
+        self.driver.get("https://stellarburgers.education-services.ru/")
 
-        time.sleep(2) 
+        
+        self._wait_and_click(
+            "//button[contains(@class, 'login-btn')] | "
+            "//a[contains(@href, 'login')] | "
+            "//*[contains(text(), 'Войти')]",
+            By.XPATH
+        )
+
+        
+        self._assert_url_contains('/login')
+
+    def test_login_from_personal_account(self):
+        
+        self.driver.get("https://stellarburgers.education-services.ru/")
+
+        
+        self._wait_and_click("[href*='account'], a.account-link", By.CSS_SELECTOR)
+
+        
+        self._assert_url_contains('/login')
+
+    def test_login_from_registration_page(self):
+        
+        self.driver.get("https://stellarburgers.education-services.ru/register")
+
+        
+        self._wait_and_click(
+            "//a[contains(@href, 'login')] | //*[contains(text(), 'Войти в аккаунт')]",
+            By.XPATH
+        )
+
+       
+        self._assert_url_contains('/login')
+
+    def test_login_from_reset_password_page(self):
+    
+        self.driver.get("https://stellarburgers.education-services.ru/forgot-password")
+
+       
+        self._wait_and_click(
+            "//a[contains(@href, 'login')] | //*[contains(text(), 'Войти в аккаунт')]",
+            By.XPATH
+        )
+
+       
+        self._assert_url_contains('/login')

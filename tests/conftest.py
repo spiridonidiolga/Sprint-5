@@ -20,4 +20,11 @@ def driver():
 def wait(driver):
     return WebDriverWait(driver, 15)
 
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome()  # Укажите путь к драйверу при необходимости
+    driver.implicitly_wait(10)
+    yield driver
+    driver.quit()
+
 
