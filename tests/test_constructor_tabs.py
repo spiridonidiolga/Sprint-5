@@ -1,65 +1,58 @@
 import pytest
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
+import sys
+sys.path.append(r"C:\Users\Я\Sprint-5")
+import data
+import sys
+sys.path.append(r"C:\Users\Я\Sprint-5")
 from locators import Locators
 
-
-
+@pytest.mark.usefixtures("driver_init")
 class TestConstructorTabs:
-    def setup_method(self):
-        """Настройка драйвера перед каждым тестом"""
-        chrome_options = Options()
-        chrome_options.add_argument("--start-maximized")
-        self.driver = webdriver.Chrome(options=chrome_options)
-        self.driver.get("https://stellarburgers.education-services.ru/")
-        self.wait = WebDriverWait(self.driver, 10)
 
-    def teardown_method(self):
-        """Очистка после каждого теста (закрытие браузера)"""
-        self.driver.quit()
-
-    def _click_tab_and_verify_section(self, tab_locator, section_locator, tab_name, section_name):
+    def _click_tab_and_verify_active(self, tab_locator, expected_tab_text):
         
         tab = self.wait.until(EC.element_to_be_clickable(tab_locator))
         tab.click()
-       
-    
-        section = self.wait.until(EC.presence_of_element_located(section_locator))
-        print(f"Секция '{section_name}' найдена")
 
-       
-        assert section.text == section_name, f"Ожидалось '{section_name}', но секция содержит '{section.text}'"
         
+        new_element = self.wait.until(
+            EC.presence_of_element_located(Locators.ACTIVE_TAB_INDICATOR)
+        )
+        assert new_element.is_displayed(), "Активный раздел присутствует в DOM, но не отображается"
+
+        
+        active_tab = self.wait.until(
+            EC.visibility_of_element_located(Locators.ACTIVE_TAB_INDICATOR)
+        )
+        assert expected_tab_text in active_tab.text, (
+            f"Ожидалась активная вкладка '{expected_tab_text}', "
+            f"но активна: '{active_tab.text}'"
+        )
 
     def test_bun_tab_scroll(self):
-        
-        self._click_tab_and_verify_section(
-            Locators.BUNS_TAB,
-            Locators.BUNS_SECTION,
-            "Булки",
-            "Булки"
+       
+        new_element = self.wait.until(
+            EC.presence_of_element_located(Locators.ACTIVE_TAB_INDICATOR)
         )
+        assert new_element.is_displayed(), "Активный раздел присутствует в DOM, но не отображается"
+
+        
+        active_tab = self.wait.until(
+            EC.visibility_of_element_located(Locators.ACTIVE_TAB_INDICATOR)
+        )
+        assert "Булки" in active_tab.text, "Вкладка «Булки» не подсвечена как активная"
 
     def test_sauce_tab_scroll(self):
         
-        self._click_tab_and_verify_section(
+        self._click_tab_and_verify_active(
             Locators.SAUCES_TAB,
-            Locators.SAUCES_SECTION,
-            "Соусы",
             "Соусы"
         )
-
     def test_ingredient_tab_scroll(self):
         
-        self._click_tab_and_verify_section(
+        self._click_tab_and_verify_active(
             Locators.INGREDIENTS_TAB,
-            Locators.INGREDIENTS_SECTION,
-            "Начинки",
             "Начинки"
-        )  
-
-
-
+        )

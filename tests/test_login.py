@@ -3,6 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from config import BASE_URL, PATHS
+
 
 class TestLogin:
     def setup_method(self):
@@ -30,8 +32,9 @@ class TestLogin:
             f"Ожидалось, что URL содержит '{expected_substring}', но текущий URL: {self.driver.current_url}"
 
     def test_login_from_main_page(self):
-        """Сценарий: вход с главной страницы."""
-        self.driver.get("https://stellarburgers.education-services.ru/")
+        
+        self.driver.get(BASE_URL + PATHS["main"])
+
 
         
         self._wait_and_click(
@@ -46,7 +49,8 @@ class TestLogin:
 
     def test_login_from_personal_account(self):
         
-        self.driver.get("https://stellarburgers.education-services.ru/")
+        self.driver.get(BASE_URL + PATHS["main"])
+
 
         
         self._wait_and_click("[href*='account'], a.account-link", By.CSS_SELECTOR)
@@ -56,7 +60,8 @@ class TestLogin:
 
     def test_login_from_registration_page(self):
         
-        self.driver.get("https://stellarburgers.education-services.ru/register")
+        self.driver.get(BASE_URL + PATHS["register"])
+
 
         
         self._wait_and_click(
@@ -69,7 +74,7 @@ class TestLogin:
 
     def test_login_from_reset_password_page(self):
     
-        self.driver.get("https://stellarburgers.education-services.ru/forgot-password")
+        self.driver.get(BASE_URL + PATHS["forgot-password"])
 
        
         self._wait_and_click(
