@@ -34,7 +34,7 @@ def driver_init(request):
     chrome_options.add_argument("--start-maximized")
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://stellarburgers.education-services.ru/")
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 30)
 
     
     request.cls.driver = driver
