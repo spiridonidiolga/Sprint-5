@@ -5,43 +5,49 @@ By = by.By
 
 class Locators:
     # Локаторы для входа
-    LOGIN_EMAIL_INPUT = (By.XPATH, "//div/main/div/form/fieldset[1]/div/div/input")
-
-    LOGIN_PASSWORD_INPUT = (By.XPATH, "//input[@type='password']")
-    LOGIN_SUBMIT_BUTTON = (By.XPATH, "//button[contains(text(), 'Войти')]")
+   
+    LOGIN_EMAIL_INPUT = (By.XPATH, "//fieldset[.//label[contains(text(), 'Email')]]//input")
+    LOGIN_PASSWORD_INPUT = (By.XPATH, "//fieldset[.//label[contains(text(), 'Пароль')]]//input[@type='password']")
+    LOGIN_SUBMIT_BUTTON = (By.XPATH, "//button[contains(., 'Войти')]")
     
     
     # Локатор для профиля (в шапке)
-    PROFILE_LINK = (By.XPATH, "//a[contains(@href, 'account')]")
-    LOGOUT_BUTTON = (By.XPATH, "//div/main/div/nav/ul/li[3]/button")
-    
+    PROFILE_LINK = (By.XPATH, "//a[contains(., 'Личный Кабинет')]")
 
+    LOGOUT_BUTTON = (By.XPATH, "//button[text()='Выход']")
+
+    
     # === КОНСТРУКТОР ===
     
-    SAUCES_TAB = (By.XPATH, "//div/main/section[1]/div[1]/div[2]")
-    INGREDIENTS_TAB = (By.XPATH, "//div/main/section[1]/div[1]/div[3]")
-    
-    SAUCES_SECTION = (By.XPATH, "//div/main/section[1]/div[2]")
-    INGREDIENTS_SECTION = (By.XPATH, "//div/main/section[1]/div[2]")
+     # Вкладки (Tabs)
+    SAUCES_TAB = (By.XPATH, "//div[contains(@class, 'tab') and .//span[text()='Соусы']]")
+    INGREDIENTS_TAB = (By.XPATH, "//div[contains(@class, 'tab') and .//span[text()='Начинки']]")
+
+    # Секции (Sections)
+    SAUCES_SECTION = (By.XPATH, "//section[contains(., 'Соусы')]")
+    INGREDIENTS_SECTION = (By.XPATH, "//section[contains(., 'Начинки')]")
     
 
     # === ФОРМА РЕГИСТРАЦИИ ===
-    BUTTON_REGISTER = (By.XPATH, "//div/main/div/div/p[1]/a")
-    INPUT_NAME = (By.XPATH, "//div/main/div/form/fieldset[1]/div/div/input")
-    INPUT_EMAIL = (By.XPATH, "//div/main/div/form/fieldset[2]/div/div/input")
-    INPUT_PASSWORD = (By.XPATH, "//div/main/div/form/fieldset[3]/div/div/input")
+    BUTTON_REGISTER = (By.XPATH, "//button[contains(text(), 'Зарегистрироваться')]")
+
+
+
+    INPUT_NAME = (By.XPATH, "//fieldset[.//label[contains(text(), 'Имя')]]//input")
+    INPUT_EMAIL = (By.XPATH, "//fieldset[.//label[contains(text(), 'Email')]]//input")
+    INPUT_PASSWORD = (By.XPATH, "//fieldset[.//label[contains(text(), 'Пароль')]]//input")
     
-    LINK_LOGIN_FROM_REGISTRATION = (By.XPATH, "//a[@href='/login' and contains(., 'Уже есть аккаунт')]")
-
+    
     # === ФОРМА ВХОДА 
-    INPUT_LOGIN_EMAIL = (By.XPATH, "//input[@name='email' and ancestor::form//button[contains(text(), 'Войти')]")
-    INPUT_LOGIN_PASSWORD = (By.XPATH, "//input[@name='password' and ancestor::form//button[contains(text(), 'Войти')]")
-    BUTTON_LOGIN_SUBMIT = (By.XPATH, "//button[contains(text(), 'Войти')]")
-
+    INPUT_LOGIN_EMAIL = (By.XPATH, "//fieldset[.//label[contains(text(), 'Email')]]//input")
+    INPUT_LOGIN_PASSWORD = (By.XPATH, "//fieldset[.//label[contains(text(), 'Пароль')]]//input")
+    BUTTON_LOGIN_SUBMIT = (By.XPATH, "//button[contains(., 'Войти') or contains(text(), 'Войти')]")
     
     # === ОБЩИЕ ЭЛЕМЕНТЫ ФОРМ ===
-    CONSTRUCTOR_LINK = (By.XPATH, "//div/header/nav/ul/li[1]/a/p")
-    PASSWORD_ERROR = (
-        By.XPATH,
-        "//div[contains(@class, 'error') or contains(text(), 'пароль') or contains(text(), '6')]"
-    )
+    CONSTRUCTOR_LINK = (By.XPATH, "//a[contains(., 'Конструктор') or .//p[contains(text(), 'Конструктор')]]")
+    PASSWORD_ERROR = (By.XPATH, "//p[text()='Некорректный пароль']")
+
+
+
+
+  

@@ -4,83 +4,66 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from config import BASE_URL, PATHS
+import sys
+sys.path.append(r"C:\Users\Я\Sprint-5")
+from helpers import wait_and_click, assert_url_contains
+
 
 
 class TestLogin:
     def setup_method(self):
-       
-        self.driver = webdriver.Chrome()  
-        self.wait = WebDriverWait(self.driver, 15)
+        self.driver = webdriver.Chrome()
 
     def teardown_method(self):
-       
         self.driver.quit()
 
-
-    def _wait_and_click(self, locator, locator_type=By.XPATH):
-        
-        element = self.wait.until(EC.element_to_be_clickable((locator_type, locator)))
-        element.click()
-        return element
-
-    def _assert_url_contains(self, expected_substring, timeout=10):
-        
-        WebDriverWait(self.driver, timeout).until(
-            EC.url_contains(expected_substring)
-        )
-        assert expected_substring in self.driver.current_url, \
-            f"Ожидалось, что URL содержит '{expected_substring}', но текущий URL: {self.driver.current_url}"
-
     def test_login_from_main_page(self):
-        
         self.driver.get(BASE_URL + PATHS["main"])
 
-
-        
-        self._wait_and_click(
+        login_button = wait_and_click(
+            self.driver,
             "//button[contains(@class, 'login-btn')] | "
             "//a[contains(@href, 'login')] | "
             "//*[contains(text(), 'Войти')]",
-            By.XPATH
+            "xpath"
         )
+        assert login_button is not None, "Кнопка входа не найдена на главной странице"
+        assert_url_contains(self.driver, '/login')
 
-        
-        self._assert_url_contains('/login')
 
     def test_login_from_personal_account(self):
-        
         self.driver.get(BASE_URL + PATHS["main"])
 
-
         
-        self._wait_and_click("[href*='account'], a.account-link", By.CSS_SELECTOR)
+        WebDriverWait(self.driver, 10).until(
+            EC.invisibility_of_element_located((By.CSS_SELECTOR, ".Modal_modal_overlay__x2ZCr"))
+        )
 
-        
-        self._assert_url_contains('/login')
+        account_link = wait_and_click(
+            self.driver,
+            "[href*='account'], a.account-link",
+            "css"
+        )
+        assert account_link is not None, "Ссылка личного кабинета не найдена на главной странице"
+        assert_url_contains(self.driver, '/login')
 
     def test_login_from_registration_page(self):
-        
         self.driver.get(BASE_URL + PATHS["register"])
-
-
-        
-        self._wait_and_click(
+        login_link = wait_and_click(
+            self.driver,
             "//a[contains(@href, 'login')] | //*[contains(text(), 'Войти в аккаунт')]",
-            By.XPATH
+            "xpath"
         )
-
-       
-        self._assert_url_contains('/login')
+        assert login_link is not None, "Ссылка входа не найдена на странице регистрации"
+        assert_url_contains(self.driver, '/login')
 
     def test_login_from_reset_password_page(self):
-    
         self.driver.get(BASE_URL + PATHS["forgot-password"])
 
-       
-        self._wait_and_click(
+        login_link = wait_and_click(
+            self.driver,
             "//a[contains(@href, 'login')] | //*[contains(text(), 'Войти в аккаунт')]",
-            By.XPATH
+            "xpath"
         )
-
-       
-        self._assert_url_contains('/login')
+        assert login_link is not None, "Ссылка входа не найдена на странице восстановления пароля"
+        assert_url_contains(self.driver, '/login')
